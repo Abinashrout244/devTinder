@@ -2,27 +2,31 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-app.use("/mid", (req, res, next) => {
-  res.send("Middleware Working is fine...");
-});
-// app.use("mid", (req, res, next) => {
-//   console.log("Middleware Working...");
-//   next(); // Go to next handler
-// });
-
 // app.get("/", (req, res) => {
 //   res.send("Hello AVI This is my first Server!!");
 // });
 
-// app.get("/file", (req, res) => {
-//   res.send("Go to MAin file..!!");
+// app.get("/user/:userId/:name", (req, res) => {
+//console.log(req.query);
+//console.log(req.params);
+// app.get(/^\/user?$/, (req, res) => {
+//   res.send({ firstName: "AVI", lastName: "SHADOW" });
 // });
-app.use("/text", (req, res) => {
-  res.send("Hello AVI This is my first Server!!");
+const { AdminAuth, UserAuth } = require("./middlewares/Adminauth");
+
+app.use("/admin", AdminAuth);
+
+app.get("/admin/getData", (req, res, next) => {
+  res.send("get all Admin data!!!");
 });
 
-app.use("/file", (req, res) => {
-  res.send("Go to MAin file..!!");
+app.get("/admin/deleteData", (req, res) => {
+  res.send("Delete all admin Data!!");
+});
+
+app.use("/user", UserAuth, (req, res, next) => {
+  console.log("First response..");
+  res.send("user Info..");
 });
 
 app.listen(port, () => {
