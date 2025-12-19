@@ -57,7 +57,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("Adding data sucesfully..");
   } catch (err) {
-    res.status(401).send("USER NOT SAVE SUCCESFULLY" + err.message);
+    res.status(401).send("USER NOT SAVE SUCCESFULLY \n" + err.message);
   }
 });
 
