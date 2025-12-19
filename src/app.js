@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-
+const bcrypt = require("bcryptjs");
+const validator = require("validator");
 const { connectDb } = require("./config/database");
 const { User } = require("./models/user");
+const { validateSignupData } = require("./utils/validateSignupdata");
 
 // app.get("/", (req, res) => {
 //   res.send("Hello AVI This is my first Server!!");
@@ -51,13 +53,51 @@ app.use(express.json()); //*This is a built in middleware which is convert json 
 
 //POST API for adding new user/instabce of a new user
 app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
-
   try {
+    const { firstName, lastName, emailId, password, age } = req.body;
+    //validator function
+    validateSignupData(req);
+
+    //incrypting/creating a hash password
+
+    const hashPassword = await bcrypt.hash(password, 10);
+    console.log(hashPassword);
+
+    // creteing a new user instance..
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: hashPassword,
+      age,
+    });
     await user.save();
     res.send("Adding data sucesfully..");
   } catch (err) {
-    res.status(401).send("USER NOT SAVE SUCCESFULLY \n" + err.message);
+    res.status(404).send("ERROR:" + err.message);
+  }
+});
+
+//POST login api for Users
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    if (!validator.isEmail(emailId)) {
+      throw new Error("Plz!! Type Valid Email Id.");
+    }
+    const isEmail = await User.findOne({ emailId: emailId });
+    if (!isEmail) {
+      throw new Error("invalid Credintials!!");
+    }
+    const isPassword = await bcrypt.compare(password, isEmail.password);
+    if (isPassword) {
+      res.send("User Logedin Sucessfulyy!!");
+    } else {
+      throw new Error("invalid Credintials!!");
+    }
+  } catch (err) {
+    res.status(404).send("ERROR:" + err.message);
   }
 });
 
