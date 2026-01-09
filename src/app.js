@@ -8,6 +8,7 @@ const validator = require("validator");
 const { connectDb } = require("./config/database");
 const { User } = require("./models/user");
 const { validateSignupData } = require("./utils/validateSignupdata");
+const { UserAuth } = require("./middlewares/Adminauth");
 
 // app.get("/", (req, res) => {
 //   res.send("Hello AVI This is my first Server!!");
@@ -111,25 +112,25 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", UserAuth, async (req, res) => {
   try {
-    const cookie = req.cookies;
-    const { token } = cookie;
-    if (!token) {
-      throw new Error("Invalid Token");
-    }
+    // const cookie = req.cookies;
+    // const { token } = cookie;
+    // if (!token) {
+    //   throw new Error("Invalid Token");
+    // }
 
-    const decodedMsg = await jwt.verify(token, "AVI@890");
+    // const decodedMsg = await jwt.verify(token, "AVI@890");
 
-    const { _id } = decodedMsg;
+    // const { _id } = decodedMsg;
 
-    const findUser = await User.findById(_id);
-    console.log("user Logedinn:" + findUser);
-    if (!findUser) {
-      throw new Error("User not found");
-    }
+    // const findUser = await User.findById(_id);
 
-    console.log(_id);
+    // if (!findUser) {
+    //   throw new Error("User not found");
+    // }
+
+    const findUser = req.findUser; //This is user is come from the auth middle ware.
 
     res.send(findUser);
   } catch (err) {
@@ -195,7 +196,6 @@ app.get("/feed", async (req, res) => {
 
 app.patch("/user", async (req, res) => {
   const id = req.body._id;
-  
 
   try {
     const userInfo = await User.findByIdAndUpdate(id, req.body, {
@@ -203,7 +203,6 @@ app.patch("/user", async (req, res) => {
     });
     // res.send("User is Updated!!!");
     res.send(userInfo);
- 
   } catch (err) {
     res.status(404).send("Something went Wrong.." + err.message);
   }
