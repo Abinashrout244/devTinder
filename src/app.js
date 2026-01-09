@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const { connectDb } = require("./config/database");
 const { User } = require("./models/user");
@@ -50,11 +52,13 @@ const { validateSignupData } = require("./utils/validateSignupdata");
 // });
 
 app.use(express.json()); //*This is a built in middleware which is convert json -> js Object ,Provided by express
+app.use(cookieParser());
 
 //POST API for adding new user/instabce of a new user
 app.post("/signup", async (req, res) => {
   try {
-    const { firstName, lastName, emailId, password, age } = req.body;
+    const { firstName, lastName, emailId, password, age, skills, gender } =
+      req.body;
     //validator function
     validateSignupData(req);
 
@@ -70,6 +74,8 @@ app.post("/signup", async (req, res) => {
       emailId,
       password: hashPassword,
       age,
+      skills,
+      gender,
     });
     await user.save();
     res.send("Adding data sucesfully..");
@@ -92,12 +98,43 @@ app.post("/login", async (req, res) => {
     }
     const isPassword = await bcrypt.compare(password, isEmail.password);
     if (isPassword) {
+      const token = await jwt.sign({ _id: isEmail._id }, "AVI@890");
+      console.log(token);
+
+      res.cookie("token", token);
       res.send("User Logedin Sucessfulyy!!");
     } else {
       throw new Error("invalid Credintials!!");
     }
   } catch (err) {
     res.status(404).send("ERROR:" + err.message);
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    const cookie = req.cookies;
+    const { token } = cookie;
+    if (!token) {
+      throw new Error("Invalid Token");
+    }
+
+    const decodedMsg = await jwt.verify(token, "AVI@890");
+
+    const { _id } = decodedMsg;
+
+    const findUser = await User.findById(_id);
+    console.log("user Logedinn:" + findUser);
+    if (!findUser) {
+      throw new Error("User not found");
+    }
+
+    console.log(_id);
+
+    res.send(findUser);
+  } catch (err) {
+    console.log(err);
+    res.status(404).send("Something went wrong:" + err.message);
   }
 });
 
