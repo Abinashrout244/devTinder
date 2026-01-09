@@ -195,7 +195,7 @@ app.get("/feed", async (req, res) => {
 
 app.patch("/user", async (req, res) => {
   const id = req.body._id;
-  //console.log(req.body);
+  
 
   try {
     const userInfo = await User.findByIdAndUpdate(id, req.body, {
@@ -203,7 +203,7 @@ app.patch("/user", async (req, res) => {
     });
     // res.send("User is Updated!!!");
     res.send(userInfo);
-    console.log(userInfo);
+ 
   } catch (err) {
     res.status(404).send("Something went Wrong.." + err.message);
   }
