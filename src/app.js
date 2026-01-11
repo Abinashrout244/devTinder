@@ -97,10 +97,9 @@ app.post("/login", async (req, res) => {
     if (!isEmail) {
       throw new Error("invalid Credintials!!");
     }
-    const isPassword = await bcrypt.compare(password, isEmail.password);
+    const isPassword = await isEmail.validatePassword(password);
     if (isPassword) {
-      const token = await jwt.sign({ _id: isEmail._id }, "AVI@890");
-      console.log(token);
+      const token = await isEmail.getJwt();
 
       res.cookie("token", token);
       res.send("User Logedin Sucessfulyy!!");
@@ -139,74 +138,80 @@ app.get("/profile", UserAuth, async (req, res) => {
   }
 });
 
-//GET API for Find  One User
-app.get("/user", async (req, res) => {
-  const userEmail = req.body.emailId;
-  const id = req.body._id;
-  try {
-    // const userInfo = await User.findOne({ emailId: userEmail });
-    // res.send(userInfo);
+app.post("/sendConnection", UserAuth, async (req, res) => {
+  const user = req.findUser;
 
-    const userInfo = await User.findById(id);
-    console.log(userInfo);
-
-    res.send(userInfo);
-
-    // const userInfo = await User.find({ emailId: userEmail });
-    // if (userInfo.length === 0) {
-    //   res.status(404).send("User is Empty!!");
-    // } else {
-    //   res.send(userInfo);
-    // }
-  } catch (err) {
-    res.status(404).send("Something Went Wrong!!!" + err.message);
-  }
+  res.send(user.firstName + " " + "sending connection request");
 });
+
+//GET API for Find  One User
+// app.get("/user", async (req, res) => {
+//   const userEmail = req.body.emailId;
+//   const id = req.body._id;
+//   try {
+//     // const userInfo = await User.findOne({ emailId: userEmail });
+//     // res.send(userInfo);
+
+//     const userInfo = await User.findById(id);
+//     console.log(userInfo);
+
+//     res.send(userInfo);
+
+//     // const userInfo = await User.find({ emailId: userEmail });
+//     // if (userInfo.length === 0) {
+//     //   res.status(404).send("User is Empty!!");
+//     // } else {
+//     //   res.send(userInfo);
+//     // }
+//   } catch (err) {
+//     res.status(404).send("Something Went Wrong!!!" + err.message);
+//   }
+// });
 
 //DELETE API for   One User
-app.delete("/user", async (req, res) => {
-  const id = req.body._id;
-  try {
-    const userInfo = await User.findByIdAndDelete(id, {
-      projection: { firstName: 1, lastName: 1, emailId: 1 },
-    });
-    console.log(userInfo);
+// app.delete("/user", async (req, res) => {
+//   const id = req.body._id;
+//   try {
+//     const userInfo = await User.findByIdAndDelete(id, {
+//       projection: { firstName: 1, lastName: 1, emailId: 1 },
+//     });
+//     console.log(userInfo);
 
-    res.send(userInfo);
-  } catch (err) {
-    res.status(404).send("Something Went Wrong!!!" + err.message);
-  }
-});
+//     res.send(userInfo);
+//   } catch (err) {
+//     res.status(404).send("Something Went Wrong!!!" + err.message);
+//   }
+// });
 
 //GET API for finding all  User
-app.get("/feed", async (req, res) => {
-  try {
-    const userInfo = await User.find({});
-    if (userInfo.length === 0) {
-      res.status(404).send("User is Empty!!");
-    } else {
-      res.send(userInfo);
-    }
-  } catch (err) {
-    res.status(404).send("Something Went Wrong!!!");
-  }
-});
+// app.get("/feed", async (req, res) => {
+//   try {
+//     const userInfo = await User.find({});
+//     if (userInfo.length === 0) {
+//       res.status(404).send("User is Empty!!");
+//     } else {
+//       res.send(userInfo);
+//     }
+//   } catch (err) {
+//     res.status(404).send("Something Went Wrong!!!");
+//   }
+// });
 
 //UPDATE API for upadting the documets.
 
-app.patch("/user", async (req, res) => {
-  const id = req.body._id;
+// app.patch("/user", async (req, res) => {
+//   const id = req.body._id;
 
-  try {
-    const userInfo = await User.findByIdAndUpdate(id, req.body, {
-      returnDocument: "after",
-    });
-    // res.send("User is Updated!!!");
-    res.send(userInfo);
-  } catch (err) {
-    res.status(404).send("Something went Wrong.." + err.message);
-  }
-});
+//   try {
+//     const userInfo = await User.findByIdAndUpdate(id, req.body, {
+//       returnDocument: "after",
+//     });
+//     // res.send("User is Updated!!!");
+//     res.send(userInfo);
+//   } catch (err) {
+//     res.status(404).send("Something went Wrong.." + err.message);
+//   }
+// });
 
 connectDb()
   .then(() => {
