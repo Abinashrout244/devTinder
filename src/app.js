@@ -55,94 +55,13 @@ const { UserAuth } = require("./middlewares/Adminauth");
 app.use(express.json()); //*This is a built in middleware which is convert json -> js Object ,Provided by express
 app.use(cookieParser());
 
-//POST API for adding new user/instabce of a new user
-app.post("/signup", async (req, res) => {
-  try {
-    const { firstName, lastName, emailId, password, age, skills, gender } =
-      req.body;
-    //validator function
-    validateSignupData(req);
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
 
-    //incrypting/creating a hash password
-
-    const hashPassword = await bcrypt.hash(password, 10);
-    console.log(hashPassword);
-
-    // creteing a new user instance..
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: hashPassword,
-      age,
-      skills,
-      gender,
-    });
-    await user.save();
-    res.send("Adding data sucesfully..");
-  } catch (err) {
-    res.status(404).send("ERROR:" + err.message);
-  }
-});
-
-//POST login api for Users
-
-app.post("/login", async (req, res) => {
-  try {
-    const { emailId, password } = req.body;
-    if (!validator.isEmail(emailId)) {
-      throw new Error("Plz!! Type Valid Email Id.");
-    }
-    const isEmail = await User.findOne({ emailId: emailId });
-    if (!isEmail) {
-      throw new Error("invalid Credintials!!");
-    }
-    const isPassword = await isEmail.validatePassword(password);
-    if (isPassword) {
-      const token = await isEmail.getJwt();
-
-      res.cookie("token", token);
-      res.send("User Logedin Sucessfulyy!!");
-    } else {
-      throw new Error("invalid Credintials!!");
-    }
-  } catch (err) {
-    res.status(404).send("ERROR:" + err.message);
-  }
-});
-
-app.get("/profile", UserAuth, async (req, res) => {
-  try {
-    // const cookie = req.cookies;
-    // const { token } = cookie;
-    // if (!token) {
-    //   throw new Error("Invalid Token");
-    // }
-
-    // const decodedMsg = await jwt.verify(token, "AVI@890");
-
-    // const { _id } = decodedMsg;
-
-    // const findUser = await User.findById(_id);
-
-    // if (!findUser) {
-    //   throw new Error("User not found");
-    // }
-
-    const findUser = req.findUser; //This is user is come from the auth middle ware.
-
-    res.send(findUser);
-  } catch (err) {
-    console.log(err);
-    res.status(404).send("Something went wrong:" + err.message);
-  }
-});
-
-app.post("/sendConnection", UserAuth, async (req, res) => {
-  const user = req.findUser;
-
-  res.send(user.firstName + " " + "sending connection request");
-});
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
 
 //GET API for Find  One User
 // app.get("/user", async (req, res) => {
