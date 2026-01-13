@@ -42,6 +42,7 @@ authRouter.post("/login", async (req, res) => {
       throw new Error("Plz!! Type Valid Email Id.");
     }
     const isEmail = await User.findOne({ emailId: emailId });
+    // .select(  "+password" );
     if (!isEmail) {
       throw new Error("invalid Credintials!!");
     }
@@ -57,6 +58,11 @@ authRouter.post("/login", async (req, res) => {
   } catch (err) {
     res.status(404).send("ERROR:" + err.message);
   }
+});
+
+authRouter.post("/logout", (req, res) => {
+  res.cookie("token", null, { expires: new Date(Date.now()) });
+  res.send("Logout Sucessfully!!");
 });
 
 module.exports = authRouter;

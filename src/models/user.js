@@ -32,6 +32,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
+      // select: false,
       validate(value) {
         if (!validator.isStrongPassword(value)) {
           throw new Error("Give a Strong Password.." + " " + value);
