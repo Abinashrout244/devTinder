@@ -72,10 +72,9 @@ profileRouter.patch("/profile/password", UserAuth, async (req, res) => {
     if (!validator.isStrongPassword(password)) {
       throw new Error("Provide a Strong Password!!");
     }
-    console.log(logedinUser.password);
+
     const hashPassword = await bcrypt.hash(password, 10);
     logedinUser.password = hashPassword;
-    console.log(logedinUser.password);
 
     await logedinUser.save();
     res.json({
