@@ -34,6 +34,7 @@ requestRouter.post(
         return res.status(404).json({ message: "User is not Found" });
       }
 
+      //This logic ensures that duplicate or reverse connection requests are not allowed.
       const existingConnectionRequest = await ConnectionRequestModel.findOne({
         $or: [
           { fromUserId, toUserId },
@@ -60,6 +61,46 @@ requestRouter.post(
       });
     } catch (err) {
       res.status(400).send("ERROR: " + err.message);
+    }
+  }
+);
+
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  UserAuth,
+  async (req, res) => {
+    try {
+      const logedinUser = req.findUser;
+      const { status, requestId } = req.params;
+
+      const allowFields = ["accepted", "rejected"];
+      if (!allowFields.includes(status)) {
+        return res.status(404).json({ message: "Invalid Status type!!" });
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(requestId)) {
+        return res.status(404).json({ message: "Invalid requestId" });
+      }
+
+      const findRequestUser = await ConnectionRequestModel.findOne({
+        _id: requestId,
+        toUserId: logedinUser._id,
+        status: "intrested",
+      });
+
+      if (!findRequestUser) {
+        return res
+          .status(400)
+          .json({ message: "Coonection request not found!" });
+      }
+
+      findRequestUser.status = status;
+
+      const data = await findRequestUser.save();
+
+      res.json({ message: "Connection request" + " " + status, data });
+    } catch (err) {
+      res.status(400).json({ message: "ERROR: " + err.message });
     }
   }
 );
