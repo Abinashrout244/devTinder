@@ -75,7 +75,7 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 userSchema.index({ firstName: 1 });

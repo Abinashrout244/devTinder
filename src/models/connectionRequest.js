@@ -6,10 +6,12 @@ const connectionRequestSchema = new Schema(
   {
     fromUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "user", //reference to the user collection
       require: true,
     },
     toUserId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
       require: true,
     },
     status: {
@@ -23,7 +25,7 @@ const connectionRequestSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 connectionRequestSchema.pre("save", async function () {
@@ -36,7 +38,7 @@ connectionRequestSchema.index({ fromUserId: 1, toUserId: -1 });
 
 const ConnectionRequestModel = mongoose.model(
   "connectionRequest",
-  connectionRequestSchema
+  connectionRequestSchema,
 );
 
 module.exports = {
