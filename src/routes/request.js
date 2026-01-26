@@ -21,10 +21,6 @@ requestRouter.post(
         throw new Error("Invalid status type");
       }
 
-      // if (fromUserId.toString() === toUserId) {
-      //   throw new Error("You can't send Connection request Yourself!");
-      // }
-
       if (!mongoose.Types.ObjectId.isValid(toUserId)) {
         return res.status(400).json({ message: "Invalid user Id" });
       }
@@ -56,13 +52,22 @@ requestRouter.post(
 
       const data = await connectionRequest.save();
       res.json({
-        message: "Connection request sent sucessfully!!",
+        message:
+          req.findUser.firstName +
+          " " +
+          "is" +
+          " " +
+          status +
+          " " +
+          "on" +
+          " " +
+          isUserExist.firstName,
         data: data,
       });
     } catch (err) {
       res.status(400).send("ERROR: " + err.message);
     }
-  }
+  },
 );
 
 requestRouter.post(
@@ -102,7 +107,7 @@ requestRouter.post(
     } catch (err) {
       res.status(400).json({ message: "ERROR: " + err.message });
     }
-  }
+  },
 );
 
 module.exports = requestRouter;
