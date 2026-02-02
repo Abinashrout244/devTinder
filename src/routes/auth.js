@@ -51,7 +51,7 @@ authRouter.post("/login", async (req, res) => {
       const token = await isEmail.getJwt();
 
       res.cookie("token", token);
-      res.send("User Logedin Sucessfulyy!!");
+      res.json({ message: "User Logedin Sucessfully", data: isEmail });
     } else {
       throw new Error("invalid Credintials!!");
     }

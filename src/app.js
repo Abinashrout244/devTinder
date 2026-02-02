@@ -9,6 +9,7 @@ const { connectDb } = require("./config/database");
 const { User } = require("./models/user");
 const { validateSignupData } = require("./utils/validateSignupdata");
 const { UserAuth } = require("./middlewares/Adminauth");
+const cors = require("cors");
 
 // app.get("/", (req, res) => {
 //   res.send("Hello AVI This is my first Server!!");
@@ -52,6 +53,12 @@ const { UserAuth } = require("./middlewares/Adminauth");
 //   }
 // });
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(express.json()); //*This is a built in middleware which is convert json -> js Object ,Provided by express
 app.use(cookieParser());
 
