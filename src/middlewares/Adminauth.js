@@ -18,7 +18,8 @@ const UserAuth = async (req, res, next) => {
     const cookie = req.cookies;
     const { token } = cookie;
     if (!token) {
-      throw new Error("Invalid Token!!");
+      //throw new Error("Invalid Token!!");
+      return res.status(401).send("Please login first");
     }
 
     const decodeData = await jwt.verify(token, "AVI@890");

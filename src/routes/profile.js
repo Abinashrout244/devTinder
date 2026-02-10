@@ -25,7 +25,7 @@ profileRouter.get("/profile/view", UserAuth, async (req, res) => {
 
     const findUser = req.findUser; //This is user is come from the auth middle ware.
 
-    res.json({ data: findUser });
+    res.json({ findUser });
   } catch (err) {
     console.log(err);
     res.status(404).send("Something went wrong:" + err.message);
@@ -49,7 +49,7 @@ profileRouter.patch("/profile/edit", UserAuth, async (req, res) => {
     }
 
     Object.keys(req.body).forEach(
-      (keys) => (logedinUser[keys] = req.body[keys])
+      (keys) => (logedinUser[keys] = req.body[keys]),
     );
     await logedinUser.save();
 
