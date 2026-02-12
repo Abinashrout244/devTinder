@@ -53,13 +53,24 @@ const cors = require("cors");
 //   }
 // });
 
+// const corsOptions = {
+//   origin: "http://localhost:5173",
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// };
+
+// app.use(cors(corsOptions));
+// app.options("*", cors(corsOptions)); // handle preflight OPTIONS
 app.use(
   cors({
     origin: "http://localhost:5173",
+
     credentials: true,
   }),
 );
-app.use(express.json()); //*This is a built in middleware which is convert json -> js Object ,Provided by express
+
+app.use(express.json()); //This is a built in middleware which is convert json -> js Object ,Provided by express
 app.use(cookieParser());
 
 const authRouter = require("./routes/auth");
@@ -68,7 +79,7 @@ const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 
 app.use("/", authRouter);
-app.use("/", profileRouter);
+app.use("/", cors(), profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 

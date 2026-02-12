@@ -15,6 +15,9 @@ const { User } = require("../models/user");
 
 const UserAuth = async (req, res, next) => {
   try {
+    // console.log("UserAuth triggered:", req.method);
+    // if (req.method === "OPTIONS") return next();
+
     const cookie = req.cookies;
     const { token } = cookie;
     if (!token) {

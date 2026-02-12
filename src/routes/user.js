@@ -26,7 +26,7 @@ userRouter.get("/user/requests/recieved", UserAuth, async (req, res) => {
 
     res.json({
       message: "User data Fetched sucessfully",
-      data: connectionRequest,
+      connectionRequest,
     });
   } catch (err) {
     res.status(400).send("ERROR:" + err.message);
@@ -45,7 +45,7 @@ userRouter.get("/user/connections", UserAuth, async (req, res) => {
     })
       .populate("fromUserId", USER_SAFE_DATA)
       .populate("toUserId", USER_SAFE_DATA);
-    console.log(connectionRequest);
+    //console.log(connectionRequest);
 
     const data = connectionRequest.map((dta) => {
       // if (dta.fromUserId._id.toString() === logedinUser._id.toString()) {
