@@ -32,7 +32,7 @@ profileRouter.get("/profile/view", UserAuth, async (req, res) => {
   }
 });
 
-profileRouter.patch("/profile/edit", UserAuth, async (req, res) => {
+profileRouter.put("/profile/edit", UserAuth, async (req, res) => {
   try {
     if (!validateProfileData(req)) {
       throw new Error("Invalid Edit Request");
@@ -41,7 +41,7 @@ profileRouter.patch("/profile/edit", UserAuth, async (req, res) => {
     if (req.body.photoURL && !validator.isURL(req.body.photoURL)) {
       throw new Error("The URL is not valid");
     }
-    if (req.body.about && req.body.about.length > 70) {
+    if (req.body.about && req.body.about.length > 200) {
       throw new Error("Your length is more");
     }
     if (req.body.skills && req.body.skills.length > 5) {
@@ -62,7 +62,7 @@ profileRouter.patch("/profile/edit", UserAuth, async (req, res) => {
   }
 });
 
-profileRouter.patch("/profile/password", UserAuth, async (req, res) => {
+profileRouter.put("/profile/password", UserAuth, async (req, res) => {
   try {
     const { password } = req.body;
     const logedinUser = req.findUser;
@@ -86,3 +86,5 @@ profileRouter.patch("/profile/password", UserAuth, async (req, res) => {
 });
 
 module.exports = profileRouter;
+
+//*The PATCH api shows CORS Eroor and  it takes lots of time but not fix for complete my Project i wil do with PUT Api. i will be doin it later

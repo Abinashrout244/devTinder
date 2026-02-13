@@ -29,7 +29,7 @@ authRouter.post("/signup", async (req, res) => {
       gender,
     });
     await user.save();
-    res.send("Adding data sucesfully..");
+    res.json({ message: "Adding Data Sucessfully", user });
   } catch (err) {
     res.status(404).send("ERROR:" + err.message);
   }

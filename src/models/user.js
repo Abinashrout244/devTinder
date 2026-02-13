@@ -42,7 +42,7 @@ const userSchema = new Schema(
     age: {
       type: Number,
       min: 18,
-      required: true,
+      //required: true,
     },
     gender: {
       type: String,
@@ -57,7 +57,7 @@ const userSchema = new Schema(
     photoURL: {
       type: String,
       default:
-        "https://tse3.mm.bing.net/th/id/OIP.MbNT4K5OHJV-eMtZcOS0ZgHaEo?pid=Api&P=0&h=180",
+        "https://tse4.mm.bing.net/th/id/OIP.Yh_Zd0cdrtxGpEjqC0tq6QHaHa?pid=Api&P=0&h=180",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Give a valid URL" + " " + value);
