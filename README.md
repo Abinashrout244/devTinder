@@ -37,10 +37,10 @@ A production-ready backend built using **Node.js, Express, MongoDB, and JWT Auth
 ## ⚙️ Environment Variables
 
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_key
+MONGO_URL=mongodb_connection_string
+JWT_SECRET=secret_key
 CLIENT_URL=http://localhost:5173
-NODE_ENV=development
+NODE_ENV=production
 
 ## 🔐 Authentication
 
