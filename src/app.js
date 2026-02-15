@@ -22,7 +22,7 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 
-app.use("/", authRouter);
+app.use("/api/auth", authRouter);
 app.use("/", cors(), profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);

@@ -29,6 +29,13 @@ authRouter.post("/signup", async (req, res) => {
       gender,
     });
     await user.save();
+    const token = await user.getJwt();
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
     res.json({ message: "Adding Data Sucessfully", user });
   } catch (err) {
     res.status(404).send("ERROR:" + err.message);
