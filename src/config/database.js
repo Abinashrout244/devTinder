@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const URL = process.env.MONGO_URL;
 
 const connectDb = async () => {
   await mongoose.connect(
-    "mongodb+srv://abhiabinash104_db_user:mHoqSZGGwTU5y50V@shadow0.ze7nowp.mongodb.net/devTinder"
+    URL,
     // ?retryWrites=true&w=majority
   );
 };

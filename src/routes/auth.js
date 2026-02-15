@@ -50,7 +50,11 @@ authRouter.post("/login", async (req, res) => {
     if (isPassword) {
       const token = await isEmail.getJwt();
 
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
       res.json({ message: "User Logedin Sucessfully", isEmail });
     } else {
       throw new Error("invalid Credintials!!");
