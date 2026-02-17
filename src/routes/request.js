@@ -51,7 +51,7 @@ requestRouter.post(
       });
 
       const data = await connectionRequest.save();
-      res.json({
+      res.status(201).json({
         message:
           req.findUser.firstName +
           " " +
@@ -80,11 +80,11 @@ requestRouter.post(
 
       const allowFields = ["accepted", "rejected"];
       if (!allowFields.includes(status)) {
-        return res.status(404).json({ message: "Invalid Status type!!" });
+        return res.status(400).json({ message: "Invalid Status type!!" });
       }
 
       if (!mongoose.Types.ObjectId.isValid(requestId)) {
-        return res.status(404).json({ message: "Invalid requestId" });
+        return res.status(400).json({ message: "Invalid requestId" });
       }
 
       const findRequestUser = await ConnectionRequestModel.findOne({
@@ -95,7 +95,7 @@ requestRouter.post(
 
       if (!findRequestUser) {
         return res
-          .status(400)
+          .status(404)
           .json({ message: "Coonection request not found!" });
       }
 
@@ -103,9 +103,11 @@ requestRouter.post(
 
       const data = await findRequestUser.save();
 
-      res.json({ message: "Connection request" + " " + status, data });
+      res
+        .status(200)
+        .json({ message: "Connection request" + " " + status, data });
     } catch (err) {
-      res.status(400).json({ message: "ERROR: " + err.message });
+      res.status(500).json({ message: "ERROR: " + err.message });
     }
   },
 );
