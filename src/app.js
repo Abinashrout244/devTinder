@@ -4,15 +4,19 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const { connectDb } = require("./config/database");
 const cors = require("cors");
+const http = require("http");
 const port = process.env.PORT || 3000;
+const initialiseSocket = require("./utils/socket.js");
+
+const corsOptions = {
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  credentials: true,
+};
 
 app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-
-    credentials: true,
-  }),
+  cors(corsOptions),
 );
+app.options("*", cors(corsOptions));
 
 app.use(express.json()); //This is a built in middleware which is convert json -> js Object ,Provided by express
 app.use(cookieParser());
@@ -23,14 +27,18 @@ const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 
 app.use("/api/auth", authRouter);
-app.use("/", cors(), profileRouter);
+app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+
+const server = http.createServer(app);
+
+initialiseSocket(server);
 
 connectDb()
   .then(() => {
     console.log("Mongo DB connection established....");
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log("server is sucessfully Done!!!");
     });
   })
